@@ -19,5 +19,5 @@ export default Mixin.create({
     this.scopedStore.destroy();
 
     this._super(...arguments);
-  },
+  }
 });
