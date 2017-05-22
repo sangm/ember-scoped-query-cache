@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import sortedObject from 'ember-scoped-query-cache/utils/sorted-object';
+import { sortedObject } from 'ember-scoped-query-cache/utils';
 
 module('Unit | Utility | sorted-object');
 

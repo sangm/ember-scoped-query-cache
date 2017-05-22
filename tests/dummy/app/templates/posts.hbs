@@ -1,0 +1,13 @@
+<h1>Posts</h1>
+
+{{outlet}}
+
+<ul>
+  {{#each model as |post|}}
+    <li>
+    {{#link-to 'post' post}}
+      {{post.title}} <small>by {{post.author.name}}</small>
+    {{/link-to}}
+    </li>
+  {{/each}}
+</ul>
