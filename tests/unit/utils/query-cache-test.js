@@ -7,10 +7,6 @@ module('Unit | Utility | query-cache', {
   }
 });
 
-test('Creates queryCache object with internal map', function (assert) {
-  assert.ok(this.queryCache._internalCache);
-});
-
 test('QueryCache#add throws if key is undefined', function(assert) {
   assert.throws(() => {
     this.queryCache.add('my-type');
@@ -20,14 +16,51 @@ test('QueryCache#add throws if key is undefined', function(assert) {
 test('QueryCache#add adds item to queryCache when all params specified', function(assert) {
   this.queryCache.add('my-type', 'mykey', 'myvalue');
 
-  assert.ok(this.queryCache._internalCache['my-type!mykey']);
+  assert.equal(this.queryCache.has('my-type', 'mykey'), true);
+});
+
+test('QueryCache#has reports true to existing keys, and false for missing keys', function(assert) {
+  this.queryCache.add('my-type', 'mykey', 'myvalue');
+  this.queryCache.add('my-type', 'undefined', undefined);
+  this.queryCache.add('my-type', 'null', null);
+  this.queryCache.add('my-type', 'false', false);
+  this.queryCache.add('my-type', 'zero', 0);
+  this.queryCache.add('my-type', 'NaN', NaN);
+
+  assert.equal(this.queryCache.has('my-type', 'mykey'), true);
+  assert.equal(this.queryCache.has('my-type', 'mykey-nope'), false);
+  assert.equal(this.queryCache.has('my-type-nop', 'mykey'), false);
+
+  assert.equal(this.queryCache.has('my-type', 'undefined'), true);
+  assert.equal(this.queryCache.has('my-type', 'null'), true);
+  assert.equal(this.queryCache.has('my-type', 'false'), true);
+  assert.equal(this.queryCache.has('my-type', 'zero'), true);
+  assert.equal(this.queryCache.has('my-type', 'NaN'), true);
+
+  // test full lifecycle (including removal)
+  this.queryCache.remove('my-type', 'mykey');
+  this.queryCache.remove('my-type', 'undefined');
+  this.queryCache.remove('my-type', 'null');
+  this.queryCache.remove('my-type', 'false');
+  this.queryCache.remove('my-type', 'zero');
+  this.queryCache.remove('my-type', 'NaN');
+
+  assert.equal(this.queryCache.has('my-type', 'mykey'), false);
+  assert.equal(this.queryCache.has('my-type', 'mykey-nope'), false);
+  assert.equal(this.queryCache.has('my-type-nop', 'mykey'), false);
+
+  assert.equal(this.queryCache.has('my-type', 'undefined'), false);
+  assert.equal(this.queryCache.has('my-type', 'null'), false);
+  assert.equal(this.queryCache.has('my-type', 'false'), false);
+  assert.equal(this.queryCache.has('my-type', 'zero'), false);
+  assert.equal(this.queryCache.has('my-type', 'NaN'), false);
 });
 
 test('QueryCache#add updates existing value when key present', function(assert) {
   this.queryCache.add('my-type', 'mykey', 'myvalue');
   this.queryCache.add('my-type', 'mykey', 'mynewvalue');
 
-  assert.equal(this.queryCache._internalCache['my-type!mykey'], 'mynewvalue');
+  assert.equal(this.queryCache.get('my-type', 'mykey'), 'mynewvalue');
 });
 
 test('QueryCache#remove removes items by key', function(assert) {

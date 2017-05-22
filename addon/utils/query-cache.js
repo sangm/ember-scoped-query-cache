@@ -22,6 +22,10 @@ export default class QueryCache {
     return this._internalCache[this._getKey(type, key)];
   }
 
+  has(type, key) {
+    return this._getKey(type, key) in this._internalCache;
+  }
+
   scheduleDecay(delay = CACHE_DECAY_TIMEOUT, onDecay) {
     if (this.decayId) {
       this.cancelDecay();
