@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  model: function() {
+  model() {
     let store = this.store;
 
     return Ember.RSVP.hash({
@@ -10,7 +10,7 @@ export default Ember.Route.extend({
     });
   },
 
-  setupController: function(controller, models) {
+  setupController(controller, models) {
     controller.setProperties(models);
   }
 });
