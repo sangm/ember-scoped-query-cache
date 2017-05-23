@@ -1,10 +1,7 @@
 import Ember from 'ember';
 import { QueryCache, sortedObject } from 'ember-scoped-query-cache/utils';
 
-const {
-  assert,
-  typeOf
-} = Ember;
+const { assert } = Ember;
 
 export default class ScopedStore {
   constructor(store) {
@@ -26,11 +23,11 @@ export default class ScopedStore {
   }
 
   _getStringifiedQuery(query, formatCacheKey) {
-    const queryCache = typeof(formatCacheKey) === 'function' ?
+    const queryCache = typeof formatCacheKey === 'function' ?
           formatCacheKey(query) :
           query;
 
-    assert('queryCache needs to be an object', typeOf(queryCache) === 'object');
+    assert('queryCache needs to be an object', query !== null && typeof queryCache  === 'object' && !Array.isArray(queryCache));
     return JSON.stringify(sortedObject(queryCache));
   }
 
@@ -52,10 +49,10 @@ export default class ScopedStore {
 
     // TODO: need to consider what to do if this promise fails
     return queryPromise.then(results => {
-      const shouldCache = typeof(shouldCachePredicate) === 'function' ?
+      const shouldCache = typeof shouldCachePredicate  === 'function' ?
         shouldCachePredicate(query, results) :
         true;
-      assert('shouldCache needs to be a boolean value', typeof(shouldCache) === 'boolean');
+      assert('shouldCache needs to be a boolean value', typeof shouldCache  === 'boolean');
 
       if (shouldCache) {
         this._queryCache.add(modelName, stringifiedQuery, queryPromise);

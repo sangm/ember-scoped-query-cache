@@ -1,13 +1,15 @@
-<h1>Posts</h1>
-
-{{outlet}}
-
-<ul>
+<div style='float: left; width: 350px;'>
+  <ul id='posts'>
   {{#each model as |post|}}
-    <li>
+    <li class='post'>
     {{#link-to 'post' post}}
       {{post.title}} <small>by {{post.author.name}}</small>
     {{/link-to}}
     </li>
   {{/each}}
-</ul>
+  </ul>
+</div>
+<div id='post-detail'>
+  {{outlet}}
+</div>
+
